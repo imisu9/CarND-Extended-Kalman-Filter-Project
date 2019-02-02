@@ -2,6 +2,7 @@
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
+using Tools::CalculateJacobian;
 
 /* 
  * Please note that the Eigen library does not initialize 
@@ -35,7 +36,7 @@ void KalmanFilter::Update(const VectorXd &z) {
    * TODO: update the state by using Kalman Filter equations
    */
   VectorXd z_pred = H_ * x_;
-  VectorXd y = z - z.pred;
+  VectorXd y = z - z_pred;
   MatrixXd Ht = H_.transpose();
   MatrixXd S = H_ * P_ * Ht + R_;
   MatrixXd Si = S.inverse();
@@ -43,8 +44,8 @@ void KalmanFilter::Update(const VectorXd &z) {
   MatrixXd K = PHt * Si;
   
   // New state
-  x_ = X_ + (K * y);
-  long x_size = z_.size();
+  x_ = x_ + (K * y);
+  long x_size = z.size();
   MatrixXd I = MatrixXd::Identity(x_size, x_size);
   P_ = (I - K * H_) * P_;
 }
@@ -58,7 +59,7 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   MatrixXd K = P_ * H_.transpose() * S.inverse();
   
   // New state
-  x_ = X_ + (K * y);
+  x_ = x_ + (K * y);
   long x_size = z_.size();
   MatrixXd I = MatrixXd::Identity(x_size, x_size);
   P_ = (I - K * H_) * P_;
