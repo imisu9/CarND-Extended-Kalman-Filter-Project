@@ -36,36 +36,34 @@ FusionEKF::FusionEKF() {
    * TODO: Finish initializing the FusionEKF.
    * TODO: Set the process and measurement noises
    */
-  // state vector
-  Eigen::VectorXd x_;
-
-  // state covariance matrix
-  Eigen::MatrixXd P_;
-
-  // state transition matrix
-  Eigen::MatrixXd F_;
-
-  // process covariance matrix
-  Eigen::MatrixXd Q_;
-
   // measurement matrix
   Eigen::MatrixXd H_;
 
-  // measurement covariance matrix
-  Eigen::MatrixXd R_;
   // create a 4D state vector, we don't know yet the values of the x state
   ekf_.x_ = VectorXd(4);
   
   // state covariance matrix P
+  ekf_.P_ = MatrixXd(4, 4);
+  ekf_.P_ << 1, 0, 0, 0,
+             0, 1, 0, 0,
+             0, 0, 1000, 0,
+             0, 0, 0, 1000;
   
-  // measurement matrix H
+  // measurement matrix
+  ekf_.H_ = MatrixXd(2, 4);
+  ekf_.H_ << 1, 0, 0, 0,
+             0, 1, 0, 0;
   
-  // the initial transition matrix F
+  // the initial transistion matrix F_
+  ekf_.F_ = MatrixXd(4, 4);
+  ekf_.F_ << 1, 0, 1, 0, 
+             0, 1, 0, 1,
+             0, 0, 1, 0,
+             0, 0, 0, 1;
   
   // set the acceleration noise components
   noise_ax = 5;
-  noise_ay = 5
-
+  noise_ay = 5;
 }
 
 /**
