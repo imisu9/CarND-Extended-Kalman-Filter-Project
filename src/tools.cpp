@@ -21,7 +21,7 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
   //  * the estimation vector size should equal ground truth vector size
   if (estimations.size() != ground_truth.size()
       || estimations.size() == 0) {
-    cout << "Invalid estimation or ground_truth data" <<  endl;
+    std::cout << "Invalid estimation or ground_truth data" <<  std::endl;
     return rmse;
   }
   // Accumulation squared residuals
@@ -55,7 +55,7 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
   
   // Check division by zero
   if (fabs(c1) < 0.0001) {
-    cout << "CalculateJacobian() - Error - Division by Zero" << endl;
+    std::cout << "CalculateJacobian() - Error - Division by Zero" << std::endl;
     return Hj;
   }
   
