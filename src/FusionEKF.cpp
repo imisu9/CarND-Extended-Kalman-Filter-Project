@@ -114,9 +114,32 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
    * TODO: Update the process noise covariance matrix.
    * Use noise_ax = 9 and noise_ay = 9 for your Q matrix.
    */
+  
+  // compute the time elapsed between the current and previous measurements
+  // dt - expressed in seconds
+  float dt = (measurement_pack.timestamp_ - previous_timestamp_) / 1000000.0;
+  previous_timestamp_ = measurement_pack.timestamp_;
+  
+  // 1. Modify the F matrix so that the time is integrated
+  // 2. Set the process covariance matrix Q
+  // 3. Call the Kalman Filter predict() function
+  // 4. Call the Kalman Filter update() function with the most recent raw measurements_
+  float dt_2 = dt * dt;
+  float dt_3 = dt_2 * dt;
+  float dt_4 = dt_3 * dt;
+  
+  ekf_.F_(0, 2) = dt;
+  ekf_.F_(1, 3) = dt;
+  
   // set the acceleration noise components
-  noise_ax = 9;
-  noise_ay = 9;
+  float noise_ax = 9;
+  float noise_ay = 9;
+  
+  ekf_.Q_ = MatrixXd(4, 4);
+  ekf_.Q_ << dt_4/4*noise_ax, 0, dt_3/2*noise_ax, 0,
+             0, dt_4/4*noise_ay, 0, dt_3/2*noise_ay,
+             dt_3/2*noise_ax, 0, dt_2*noise_ax, 0,
+             0, dt_3/2*noise_ay, 0, dt_2*noise_ay;
 
   ekf_.Predict();
 
